@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { ProductsDTO } from '../dto/ProductsDTO.js';
-import { ProductsDAO } from '../dao/productsDAO.js';
 import { CartsDAO } from '../dao/cartsDAO.js';
-import { CartsDTO } from '../dto/CartsDTO.js';
+import { ProductsDAO } from '../dao/productsDAO.js';
 import { CartProductsDTO } from '../dto/CartProductsDTO.js';
+import { CartsDTO } from '../dto/CartsDTO.js';
+import { ProductsDTO } from '../dto/ProductsDTO.js';
 
 export const router = Router();
 
@@ -61,10 +61,9 @@ router.post('/', async (req, res) => {
 
 router.post('/:cid/product/:pid', async (req, res) => {
 
-  const { cid , pid } = req.params
+  const { cid, pid } = req.params
 
-  const validate = await CartsDTO.validateData(cid,pid,req.body);
-  console.log("validate", validate)
+  const validate = await CartsDTO.validateData(cid, pid, req.body);
 
   if (validate !== true) {
     res.setHeader('Content-Type', 'application/json');
@@ -72,19 +71,34 @@ router.post('/:cid/product/:pid', async (req, res) => {
   }
 
   try {
-    const cartProducts = new CartsDTO(
+
+    let cartProducts = new CartsDTO(
       pid,
       cid,
       req.body.quantity
     );
-    const addProductCartRes = await CartsDAO.addProductCart(cartProducts)
 
-    if (!addProductCartRes.status) {
+    const getAllCartProducts = await CartsDAO.getCartById(cid);
+
+    if (!getAllCartProducts.status) {
       res.setHeader('Content-Type', 'application/json');
-      return res.status(addProductCartRes.code).json({ error: addProductCartRes.error })
+      return res.status(getAllCartProducts.code).json({ error: getAllCartProducts.error })
     }
 
-    console.log("res", addProductCartRes)
+    let exist = getAllCartProducts.data.find(cart => cart.productId == pid)
+
+    if (exist !== undefined) {
+      const updateCart = await CartsDAO.updateCarts(exist, req.body.quantity, pid, cid)
+      console.log("update", updateCart)
+    } else {
+      const addProductCartRes = await CartsDAO.addProductCart(cartProducts)
+      if (!addProductCartRes.status) {
+        res.setHeader('Content-Type', 'application/json');
+        return res.status(addProductCartRes.code).json({ error: addProductCartRes.error })
+      }
+    }
+
+
     res.setHeader('Content-Type', 'application/json');
     return res.status(200).json({ "response": "ok", "data": addProductCartRes });
 
