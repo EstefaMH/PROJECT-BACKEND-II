@@ -1,8 +1,6 @@
-import fs from "fs"
 import { config } from "../config/config.js";
-import { FilesManager } from "../data/FilesManager.js"
+import { FilesManager } from "../data/FilesManager.js";
 import { ProductsDTO } from "../dto/ProductsDTO.js";
-import { error } from "console";
 
 export class ProductsDAO {
 

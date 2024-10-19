@@ -11,7 +11,6 @@ export class CartsDAO {
     static async getCarts() {
         FilesManager.setPath(config.dataFiles.cart || './src/data/carrito.json');
         const data = await FilesManager.readFileData();
-        console.log("data get", data)
         return data
     }
 
@@ -29,10 +28,10 @@ export class CartsDAO {
 
         if (!exist) {
             console.log("el cart no existe");
-            return { "status": false, "error": "el cart no existe" }
+            return { "status": false, "code": 400 , "error": "el cart no existe" }
         }
 
-        return { "status": 200, "data": exist.products }
+        return { "status": 200, "code":200, "data": exist.products }
     }
 
     /**
@@ -61,22 +60,11 @@ export class CartsDAO {
     static async addProductCart(cart) {
         const { cartId, productId, quantity } = cart
 
-        console.log("cartparam", cart, "quantity", quantity)
-
         try {
             const carts = await this.getCarts()
             const indexArray = carts.findIndex(cart => cart.id == parseInt(cartId));
-            console.log("index", indexArray, cartId)
 
-            if (indexArray !== -1) {
-
-               /* const existProductId = carts[indexArray].products.findIndex(product => product.productId == parseInt(productId));
-                console.log(existProductId)
-
-                if (existProductId  !== -1) {
-                    quantity = carts[indexArray].products[existProductId].quantity += quantity
-                }*/
-               
+            if (indexArray !== -1) {  
                
                 const newRow = carts[indexArray]["products"] = [...carts[indexArray]["products"],{
                     "productId": productId,
@@ -86,7 +74,6 @@ export class CartsDAO {
 
                 FilesManager.setPath(config.dataFiles.cart || './src/data/carrito.json');
                 const addedData = await FilesManager.addInfoFile(newRow);
-                console.log(addedData)
 
                 await FilesManager.recordFile(JSON.stringify(carts))
 
@@ -102,29 +89,32 @@ export class CartsDAO {
         }
     }
 
-    static async deleteProduct(product) {
+    static async updateCarts(cartById, quantityBody, pid, cid) {
+
+        const { quantity , productId} = cartById
+        
         try {
-            FilesManager.setPath(config.dataFiles.cart || './src/data/cart.json');
+            const productsCart = await this.getCarts()
+            let indexArray = productsCart.findIndex(cart => cart.id == cid)
+            const indexArrayProduct = productsCart[indexArray].products.findIndex(productCart => productCart.productId == parseInt(pid));
 
+            if (indexArray !== -1) {
+                const newQuantity =  parseInt(quantity) + parseInt(quantityBody)
 
-            const addedData = await FilesManager.addInfoFile(product);
-            return { data: addedData, status: 'Añadido con éxito al JSON' };
+                productsCart[indexArray].products[indexArrayProduct]["quantity"] = newQuantity;
+
+                FilesManager.setPath(config.dataFiles.cart || './src/data/carrito.json');
+                FilesManager.recordFile(JSON.stringify(productsCart))
+                return { status: "ok" , res: 'Añadido con éxito al JSON' };
+
+            }
+
+            return { status: false , error: 'El producto aun no existe' };
+
         } catch (error) {
-            console.error('Error adding product:', error);
-            return { status: 500, error: 'Error al añadir el producto' };
+            return { status: 500, error: 'Error de servidor' };
         }
     }
-
-    static async updateProduct(product) {
-        try {
-            FilesManager.setPath(config.dataFiles.cart || './src/data/cart.json');
-
-            const addedData = await FilesManager.addInfoFile(product);
-            return { data: addedData, status: 'Añadido con éxito al JSON' };
-        } catch (error) {
-            console.error('Error adding product:', error);
-            return { status: 500, error: 'Error al añadir el producto' };
-        }
-    }
+   
 
 }
