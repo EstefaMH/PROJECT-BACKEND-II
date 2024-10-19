@@ -11,6 +11,7 @@ export class ProductsDAO {
     static async getProducts() {
         FilesManager.setPath("./src/data/productos.json")
         const data = await FilesManager.readFileData();
+
         return data
     }
 

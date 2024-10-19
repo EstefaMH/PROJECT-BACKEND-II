@@ -16,10 +16,6 @@ export class FilesManager {
     }
 
     static async recordFile(datos = "") {
-        console.log("datos", datos)
-        /*if (typeof datos != "") {
-            throw new Error(`error método grabaArchivo - argumento con formato inválido`)
-        }*/
         await fs.promises.writeFile(this.path, datos)
     }
 

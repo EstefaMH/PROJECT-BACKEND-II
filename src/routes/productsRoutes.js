@@ -9,6 +9,14 @@ router.get('/', async (req, res) => {
   let data = {}
   try {
     data = await ProductsDAO.getProducts();
+    
+    const { limit } = req.query
+
+    if(!limit){
+        limit = data.length
+    }
+    data =data.slice(0,limit)    
+    
     return res.status(200).json({ "response": "ok", "status": 200, "data": data });
   } catch (error) {
     console.log(error)
