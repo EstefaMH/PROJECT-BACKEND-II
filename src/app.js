@@ -20,7 +20,6 @@ app.use("/api/carts", cartsRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-    console.log("hola este es mi server1");
 });
 
 
