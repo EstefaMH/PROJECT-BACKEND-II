@@ -14,9 +14,12 @@
     "config": "^3.3.12",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-handlebars": "^8.0.1",
     "fs": "^0.0.1-security",
     "joi": "^17.13.3",
     "nodemon": "^3.1.7",
+    "proyectonode": "file:",
+    "socket.io": "^4.8.1",
     "yup": "^1.4.0"
   },
   "devDependencies": {

@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
   try {
     data = await ProductsDAO.getProducts();
     
-    const { limit } = req.query
+    let { limit } = req.query
 
     if(!limit){
         limit = data.length
@@ -18,6 +18,7 @@ router.get('/', async (req, res) => {
     data =data.slice(0,limit)    
     
     return res.status(200).json({ "response": "ok", "status": 200, "data": data });
+    //return res.status(200).json({ data });
   } catch (error) {
     console.log(error)
   }
@@ -74,6 +75,7 @@ router.post('/', async (req, res) => {
     const addProductRes = await ProductsDAO.addProduct(product)
     res.setHeader('Content-Type', 'application/json');
     console.log("res", addProductRes)
+    req.serverSocket.emit("newProduct", addProductRes)
 
   } catch (error) {
     console.log(error)

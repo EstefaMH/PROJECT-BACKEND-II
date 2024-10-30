@@ -1,0 +1,13 @@
+<h3 class="align-center">{{{title}}}</h3>
+<section class="section-products">
+    {{#each productos}}
+    <article id="product"  class="product">
+        <h2>{{this.title}}</h2>
+        <p>{{this.description}}</p>
+        <p>Código: {{this.code}}</p>
+        <p>Precio: {{this.price}}</p>
+        <p>Stock: {{this.stock}}</p>
+        <p>Categoría: {{this.category}}</p>
+    </article>
+    {{/each}}
+</section>
