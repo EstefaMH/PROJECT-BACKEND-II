@@ -75,7 +75,7 @@ router.post('/', async (req, res) => {
     const addProductRes = await ProductsDAO.addProduct(product)
     res.setHeader('Content-Type', 'application/json');
     console.log("res", addProductRes)
-    req.serverSocket.emit("newProduct", addProductRes)
+    req.serverSocket.emit("newProduct", product )
 
   } catch (error) {
     console.log(error)

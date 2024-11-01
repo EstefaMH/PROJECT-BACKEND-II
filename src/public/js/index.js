@@ -11,9 +11,9 @@ const productLi = document.getElementById("product")
 
 socket.on("newProduct", product => {
     console.log("new")
-    let li = document.createElement("li")
-    li.textContent = product.title
-    productLi.append(li)
+    const li = document.createElement("li");
+    li.textContent = product.title; 
+    productLi.append(li); 
 })
 
 
@@ -26,18 +26,17 @@ const getProducts = async () => {
         }
 
         const data = await response.json();
-        const productos = data.data; // Access products from the response structure
+        const productos = data.data; 
 
-        console.log("Products fetched successfully!", productos);
+        console.log("Products cargados exitosamente!", productos);
 
         productos.forEach((product) => {
             const li = document.createElement("li");
-            li.textContent = product.title; // Access product name property
-            productLi.append(li); // Ensure correct method for appending
+            li.textContent = product.title; 
+            productLi.append(li); 
         });
     } catch (error) {
-        console.error("Error fetching products:", error);
-        // Handle errors gracefully, e.g., display an error message to the user
+        console.error("Error :", error);
     }
 }
 getProducts();
