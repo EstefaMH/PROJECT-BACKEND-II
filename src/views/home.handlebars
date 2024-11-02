@@ -2,6 +2,7 @@
 <section class="section-products">
     {{#each productos}}
     <article id="product"  class="product">
+        <img src={{this.thumbnails}} />
         <h2>{{this.title}}</h2>
         <p>{{this.description}}</p>
         <p>Código: {{this.code}}</p>
