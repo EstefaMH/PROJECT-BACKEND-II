@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
     data =data.slice(0,limit)    
     
     return res.status(200).json({ "response": "ok", "status": 200, "data": data });
-    //return res.status(200).json({ data });
+
   } catch (error) {
     console.log(error)
   }
@@ -155,6 +155,8 @@ router.delete("/:pid", async (req, res) => {
     }
 
     res.setHeader('Content-Type', 'application/json');
+    
+    req.serverSocket.emit("deleteProduct", pid)
     return res.status(200).json({ message: deleteProduct.res});
 
   } catch (error) {

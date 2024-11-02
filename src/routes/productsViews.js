@@ -11,7 +11,6 @@ router.get("/", async(req, res)=>{
     console.log("data ingresa")
     FilesManager.setPath("./src/data/productos.json")
     const data = await FilesManager.readFileData();
-    console.log("data " , data , "thumb" , data[0].thumbnails)
 
     res.render("home", {title : "Productos" , productos: data })
 })
