@@ -52,6 +52,13 @@ export class ProductsDAO {
         }
     }
 
+
+    /**
+     * Metodo para actualizar un producto
+     * @param {Number} id 
+     * @param {ProductsDTO} newProduct 
+     * @returns Object
+     */
     static async updateProduct(id, newProduct) {
 
         const { title, description, code, price, status, category } = newProduct
@@ -84,7 +91,11 @@ export class ProductsDAO {
         }
     }
 
-    
+    /**
+     * 
+     * @param {Number} id 
+     * @returns Object
+     */
     static async deleteProduct(id) {
         try {
             const products = await this.getProducts()
