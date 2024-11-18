@@ -67,3 +67,11 @@ h3{
     font-size: 3rem;
     padding: 2%;
 }
+
+
+.section-filter{
+    width: 50%;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 2% 0 2% 0;
+}
