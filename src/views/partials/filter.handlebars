@@ -1,0 +1,42 @@
+<section class="section-filter">
+  <div class="dropdown ">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      Categorias
+    </button>
+    <ul class="dropdown-menu" id="category-filter">
+
+    </ul>
+  </div>
+
+  <div class="dropdown ">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      Filtrar por precio
+    </button>
+    <ul class="dropdown-menu" id="category-filter">
+      <li><a class="dropdown-item" onclick="getProducts()" href="{{{path}}}sort=1">De menor a mayor</a></li>
+      <li><a class="dropdown-item" onclick="getProducts()" href="{{{path}}}sort=-1">De mayor a menor</a></li>
+    </ul>
+  </div>
+
+  <div class="dropdown ">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      Filtrar por disponibilidad
+    </button>
+    <ul class="dropdown-menu" id="category-filter">
+      <li><a class="dropdown-item" onclick="getProducts()" href="{{{path}}}status=true">Disponible</a></li>
+      <li><a class="dropdown-item" onclick="getProducts()" href="{{{path}}}status=false">No disponible</a></li>
+    </ul>
+  </div>
+
+  <a href="/">
+    <button class="btn btn-primary" type="button">
+      Borrar filtros
+    </button>
+  </a>
+</section>
+
+<script>
+  setProducts(){
+    window
+  }
+</script>
