@@ -1,14 +1,19 @@
 import { config } from "../config/config.js";
 import { FilesManager } from "../data/FilesManager.js";
 import { ProductsDTO } from "../dto/ProductsDTO.js";
+import  { productosModelo } from "../models/productsModel.js";
+import mongoose from 'mongoose';
 
 export class ProductsDAO {
 
+   
+
     /**
      * Metodo para recuperar todos los productos 
-     * @returns { Promise<Array<ProductsDTO> } 
+     * @returns { Promise<Array } 
      */
     static async getProducts() {
+      
         FilesManager.setPath("./src/data/productos.json")
         const data = await FilesManager.readFileData();
 
@@ -80,11 +85,11 @@ export class ProductsDAO {
 
                 FilesManager.setPath(config.dataFiles.products || './src/data/productos.json');
                 FilesManager.recordFile(JSON.stringify(products))
-                return { status: "ok" , res: 'Añadido con éxito al JSON' };
+                return { status: "ok", res: 'Añadido con éxito al JSON' };
 
             }
 
-            return { status: false , error: 'El producto no existe' };
+            return { status: false, error: 'El producto no existe' };
 
         } catch (error) {
             return { status: 500, error: 'Error de servidor' };
@@ -103,14 +108,14 @@ export class ProductsDAO {
             const indexArray = products.findIndex(product => product.id == id);
 
             if (indexArray !== -1) {
-                products.splice(indexArray, 1); 
+                products.splice(indexArray, 1);
                 FilesManager.setPath(config.dataFiles.products || './src/data/productos.json');
                 FilesManager.recordFile(JSON.stringify(products))
-                return { status: "ok" , res: 'Producto eliminado con exito' };
+                return { status: "ok", res: 'Producto eliminado con exito' };
 
             }
 
-            return { status: false , error: 'El producto no encontrado' };
+            return { status: false, error: 'El producto no encontrado' };
 
         } catch (error) {
             return { status: 500, error: 'Error de servidor' };

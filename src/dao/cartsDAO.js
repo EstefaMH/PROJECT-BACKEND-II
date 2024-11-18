@@ -1,6 +1,7 @@
 import { config } from "../config/config.js";
 import { FilesManager } from "../data/FilesManager.js"
 import { ProductsDTO } from "../dto/ProductsDTO.js";
+import { productosModelo } from "../models/productsModel.js";
 
 export class CartsDAO {
 
@@ -115,6 +116,33 @@ export class CartsDAO {
             return { status: 500, error: 'Error de servidor' };
         }
     }
+
+    
+    static async deleteProductCart( pid, cid) {
+
+        try {
+            const productsCart = await productosModelo.deleteOne({_id:pid})
+            let indexArray = productsCart.findIndex(cart => cart.id == cid)
+            const indexArrayProduct = productsCart[indexArray].products.findIndex(productCart => productCart.productId == parseInt(pid));
+
+            if (indexArray !== -1) {
+                const newQuantity =  parseInt(quantity) + parseInt(quantityBody)
+
+                productsCart[indexArray].products[indexArrayProduct]["quantity"] = newQuantity;
+
+                FilesManager.setPath(config.dataFiles.cart || './src/data/carrito.json');
+                FilesManager.recordFile(JSON.stringify(productsCart))
+                return { status: "ok" , res: 'Añadido con éxito al JSON' };
+
+            }
+
+            return { status: false , error: 'El producto aun no existe' };
+
+        } catch (error) {
+            return { status: 500, error: 'Error de servidor' };
+        }
+    }
    
+
 
 }
