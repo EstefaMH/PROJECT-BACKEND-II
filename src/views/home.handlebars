@@ -1,15 +1,61 @@
 <h3 class="align-center">{{{title}}}</h3>
+<section>
+    {{>filter this}}
+</section>
+<section>
+    {{>pagination this }}
+</section>
 <section class="section-products">
     {{#each productos}}
-    <article id="product"  class="product">
-        <img src={{this.thumbnails}} />
+
+    <article id="product" class="product">
+        <a href="/{{this._id}}">
+            <img src={{this.thumbnails}} />
+        </a>
         <h2>{{this.title}}</h2>
         <p>{{this.description}}</p>
-        <p>Código: {{this.code}}</p>
-        <p>Precio: {{this.price}}</p>
-        <p>Stock: {{this.stock}}</p>
-        <p>Categoría: {{this.category}}</p>
+        <p><strong>Código:</strong> {{this.code}}</p>
+        <p><strong>Precio:</strong> {{this.price}}</p>
+        <p><strong>Stock:</strong> {{this.stock}}</p>
+        <p><strong>Categoría:</strong> {{this.category}}</p>
+        <button  class="btn btn-primary w-100"> Agregar al carrito</button>
+
     </article>
+
     {{/each}}
 </section>
+<section>
+    {{>pagination}}
+</section>
 
+
+<script>
+Handlebars.registerHelper('postProductoToCart', async function (productId, quantity) {
+  const formData = new FormData();
+  formData.append('productId', productId);
+  formData.append('quantity', quantity);
+
+  try {
+    const response = await fetch('/api/carts/', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Producto    creado exitosamente:", data);
+
+    // Handle success, e.g., update UI, show a success message
+    // ...
+
+  } catch (error) {
+    console.error("Error:", error);
+    // Handle errors, e.g., show an error message to the user
+  }
+});
+
+
+</script>
