@@ -1,30 +1,71 @@
 import { Router } from 'express';
 import { ProductsDTO } from '../dto/ProductsDTO.js';
 import { ProductsDAO } from '../dao/productsDAO.js';
+import { ProductsController } from '../controllers/ProductsControllers.js';
 
 export const router = Router();
 
 
 router.get('/', async (req, res) => {
+
   let data = {}
   try {
-    data = await ProductsDAO.getProducts();
-    
-    let { limit } = req.query
+    let { limit, page, sort , filter } = req.query
+    console.log("categoryQuery", filter)
 
-    if(!limit){
-        limit = data.length
-    }
-    data =data.slice(0,limit)    
-    
-    return res.status(200).json({ "response": "ok", "status": 200, "data": data });
+    data = await ProductsController.getProducts(limit, page, sort, filter);
+    console.log("data leng", data)
+
+    return res.status(200).json(
+      {
+        "status": "success",
+        "payload": data,
+        "totalPages": data.length,
+        "prevPage": parseInt(page) - 1, 
+        "nextPage": parseInt(page) + 1, 
+        "page": page, 
+        "hasPrevPage": "", 
+        "hasNextPage": "", 
+        "prevLink": "",
+        "nextLink": "",
+      }
+
+    );
 
   } catch (error) {
     console.log(error)
+    return res.status(500).json(
+      {
+        "status": "error",
+      }
+    );
   }
 
 });
 
+router.get('/categories', async (req, res) => {
+
+  let data = {}
+  try {
+    data = await ProductsController.getUniqueCategories();
+    console.log("data categories", data)
+
+    return res.status(200).json(
+      {
+        "payload": data,
+      }
+    );
+
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json(
+      {
+        "status": "error",
+      }
+    );
+  }
+
+});
 
 router.get('/:id', async (req, res) => {
   let { id } = req.params
@@ -75,7 +116,7 @@ router.post('/', async (req, res) => {
     const addProductRes = await ProductsDAO.addProduct(product)
     res.setHeader('Content-Type', 'application/json');
     console.log("res", addProductRes)
-    req.serverSocket.emit("newProduct", product )
+    req.serverSocket.emit("newProduct", product)
 
   } catch (error) {
     console.log(error)
@@ -155,9 +196,9 @@ router.delete("/:pid", async (req, res) => {
     }
 
     res.setHeader('Content-Type', 'application/json');
-    
+
     req.serverSocket.emit("deleteProduct", pid)
-    return res.status(200).json({ message: deleteProduct.res});
+    return res.status(200).json({ message: deleteProduct.res });
 
   } catch (error) {
     console.log(error)
