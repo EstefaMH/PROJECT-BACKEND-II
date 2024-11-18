@@ -4,8 +4,10 @@ import { ProductsDAO } from '../dao/productsDAO.js';
 import { CartProductsDTO } from '../dto/CartProductsDTO.js';
 import { CartsDTO } from '../dto/CartsDTO.js';
 import { ProductsDTO } from '../dto/ProductsDTO.js';
+import { CartsController } from '../controllers/CartsController.js';
 
 export const router = Router();
+
 
 
 router.get('/:cid', async (req, res) => {
@@ -46,10 +48,10 @@ router.post('/', async (req, res) => {
       null,
       req.body.products
     );
-    const addProductCartRes = await CartsDAO.addNewCart(newCart)
+    const addProductCartRes = await CartsController.addNewCart(newCart)
     res.setHeader('Content-Type', 'application/json');
     console.log("res", addProductCartRes)
-    res.send("ok");
+    res.json({id: addProductCartRes._id});
 
   } catch (error) {
     console.log(error)
@@ -171,6 +173,32 @@ router.delete("/:pid", async (req, res) => {
 
   try {
     const deleteProduct = await ProductsDAO.deleteProduct(pid)
+    console.log(deleteProduct);
+
+    if (!deleteProduct.status) {
+      res.setHeader('Content-Type', 'application/json');
+      return res.status(400).json({ error: updateProduct.error })
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(200).json({ message: deleteProduct.res });
+
+  } catch (error) {
+    console.log(error)
+  }
+
+})
+
+router.delete("/:cid/products/:pid", async (req, res) => {
+  let { cid , pid } = req.params
+
+  if (isNaN(pid) && isNaN(cid)) {
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(400).json({ error: `id debe ser numérico` })
+  }
+
+  try {
+    const deleteProduct = await CartsDAO.deleteProductCart(pid,cid)
     console.log(deleteProduct);
 
     if (!deleteProduct.status) {
