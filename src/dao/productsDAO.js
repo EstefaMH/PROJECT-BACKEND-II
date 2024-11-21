@@ -1,4 +1,3 @@
-import { ProductsDTO } from "../dto/ProductsDTO.js";
 import { productosModelo } from "../models/productsModel.js";
 
 
