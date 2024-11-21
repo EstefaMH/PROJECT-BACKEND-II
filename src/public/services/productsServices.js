@@ -1,3 +1,4 @@
+
 const getProducts = async () => {
 
     try {

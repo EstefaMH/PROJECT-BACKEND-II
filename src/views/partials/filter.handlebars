@@ -13,8 +13,10 @@
       Filtrar por precio
     </button>
     <ul class="dropdown-menu" id="category-filter">
-      <li><a class="dropdown-item" onclick="getProducts()" href="{{{path}}}sort=1">De menor a mayor</a></li>
-      <li><a class="dropdown-item" onclick="getProducts()" href="{{{path}}}sort=-1">De mayor a menor</a></li>
+      <li><a  class="dropdown-item" onclick="getProducts()" href="{{{path}}}sort=asc">De menor a mayor</a>
+      </li>
+      <li><a  class="dropdown-item" onclick="getProducts()" href="{{{path}}}sort=des">De mayor a menor</a>
+      </li>
     </ul>
   </div>
 
@@ -23,8 +25,8 @@
       Filtrar por disponibilidad
     </button>
     <ul class="dropdown-menu" id="category-filter">
-      <li><a class="dropdown-item" onclick="getProducts()" href="{{{path}}}status=true">Disponible</a></li>
-      <li><a class="dropdown-item" onclick="getProducts()" href="{{{path}}}status=false">No disponible</a></li>
+      <li><a id="sort-asc" class="dropdown-item" onclick="getProducts()" >Disponible</a></li>
+      <li><a id="sort-des" class="dropdown-item" onclick="getProducts()" >No disponible</a></li>
     </ul>
   </div>
 
@@ -36,7 +38,11 @@
 </section>
 
 <script>
-  setProducts(){
-    window
-  }
+  const sortAsc = document.getElementById("sort-asc")
+  const sortDes = document.getElementById("sort-des")
+
+  const url = window.location.href
+  console.log("url script", url)
+  sortAsc.href = `/?query=${encodeURIComponent(JSON.stringify({ "status": "true" }))}`
+  sortDes.href = `/?query=${encodeURIComponent(JSON.stringify({ "status": "false" }))}`
 </script>

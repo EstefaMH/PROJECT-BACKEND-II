@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { CartsController } from '../controllers/CartsController.js';
+import { CartsDAO } from '../dao/cartsDAO.js';
+import { cartsModelo } from '../models/cartsModel.js';
 
 
 
@@ -9,16 +10,19 @@ router.get("/", async (req, res) => {
     res.render("cart", { title: " carts" })
 })
 
-router.get("/:cid", async (req, res) => {
-    let { cid } = req.params
+router.get("/:id", async (req, res) => {
+    let { id } = req.params
    
-    console.log("cid", cid)
+    console.log("cid", id)
 
-    const cart = await CartsController.getCartById(cid);
-    console.log("data controller cart", cart)
+    const productsCart = await CartsDAO.getCartById(id);
+    
+    console.log("data controller cart", productsCart)
+    console.log("data controller title", productsCart.products)
    
-    res.render("", {
-        title: "Cart",
+    res.render("cart", {
+        title: "Mi carrito",
+        products :productsCart.products
     }
     )
 })

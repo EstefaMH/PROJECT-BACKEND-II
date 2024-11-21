@@ -24,8 +24,9 @@ app.use(express.static("./src/public"))
 app.engine("handlebars", engine())
 app.set("view engine", "handlebars")
 app.set("views", "./src/views")
-app.use("/carts", cartsView);
+
 app.use("/", productsView);
+app.use("/carts", cartsView);
 
 
 

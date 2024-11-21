@@ -10,10 +10,9 @@ export class CartsDTO {
   }
 
   static async validateData(cart) {
-    console.log("validatecart",cart)
     const schema = yup.object().shape({
-      productId : yup.number(),
-      cartId: yup.number(),
+      productId : yup.string(),
+      cartId: yup.string(),
       quantity : yup.number()
     });
 

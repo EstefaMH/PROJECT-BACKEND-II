@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { ProductsDTO } from '../dto/ProductsDTO.js';
 import { ProductsDAO } from '../dao/productsDAO.js';
-import { ProductsController } from '../controllers/ProductsControllers.js';
+import { ProductsDTO } from '../dto/ProductsDTO.js';
 
 export const router = Router();
 
@@ -9,36 +8,25 @@ export const router = Router();
 router.get('/', async (req, res) => {
 
   let data = {}
+  let { limit, page, sort, query } = req.query
+
+  const jsonQuery = query && JSON.parse(query);
+  const mongosort = sort == "asc" ? 1 : -1
+
   try {
-    let { limit, page, sort , filter } = req.query
-    console.log("categoryQuery", filter)
 
-    data = await ProductsController.getProducts(limit, page, sort, filter);
-    console.log("data leng", data)
-
-    return res.status(200).json(
-      {
-        "status": "success",
-        "payload": data,
-        "totalPages": data.length,
-        "prevPage": parseInt(page) - 1, 
-        "nextPage": parseInt(page) + 1, 
-        "page": page, 
-        "hasPrevPage": "", 
-        "hasNextPage": "", 
-        "prevLink": "",
-        "nextLink": "",
-      }
-
-    );
+    data = await ProductsDAO.getProducts(limit, page, mongosort, jsonQuery);
+    return res.status(200).json(data);
 
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return res.status(500).json(
       {
-        "status": "error",
+        status: 'error',
+        error: `Error en la carga de los productos, error: ${error.message} `,
       }
-    );
+    )
+
   }
 
 });
@@ -47,7 +35,7 @@ router.get('/categories', async (req, res) => {
 
   let data = {}
   try {
-    data = await ProductsController.getUniqueCategories();
+    data = await ProductsDAO.getUniqueCategories();
     console.log("data categories", data)
 
     return res.status(200).json(
@@ -60,39 +48,30 @@ router.get('/categories', async (req, res) => {
     console.log(error)
     return res.status(500).json(
       {
-        "status": "error",
+        "error": error.message,
       }
     );
   }
 
 });
 
+
 router.get('/:id', async (req, res) => {
   let { id } = req.params
-
-  if (isNaN(id)) {
-    res.setHeader('Content-Type', 'application/json');
-    return res.status(400).json({ error: `id debe ser numérico` })
-  }
 
   try {
     const product = await ProductsDAO.getProductById(id);
 
-    if (!product.status) {
-      res.setHeader('Content-Type', 'application/json');
-      return res.status(400).json({ error: product.error })
-    }
     return res.status(200).json({ "response": "ok", "data": product });
 
   } catch (error) {
     console.log(error)
+    return res.status(500).json({ "error": error.message });
   }
-
 });
 
 
 router.post('/', async (req, res) => {
-  console.log(req.body)
 
   const validate = await ProductsDTO.validateData(req.body);
 
@@ -113,30 +92,21 @@ router.post('/', async (req, res) => {
       req.body.category,
       req.body.thumbnails
     );
-    const addProductRes = await ProductsDAO.addProduct(product)
-    res.setHeader('Content-Type', 'application/json');
-    console.log("res", addProductRes)
-    req.serverSocket.emit("newProduct", product)
+    const response = await ProductsDAO.addProduct(product)
 
+    res.setHeader('Content-Type', 'application/json');
+    res.status(201).json({ response: "producto creado con exito", id: response._id, producto: response })
+    req.serverSocket.emit("newProduct", product)
   } catch (error) {
     console.log(error)
-    res.send(error)
+    res.status(500).json({ "error": error.message })
   }
-
-  res.send("ok");
 });
 
 
 router.put("/:pid", async (req, res) => {
 
   let { pid } = req.params
-  console.log("id", pid)
-
-  if (isNaN(pid)) {
-    res.setHeader('Content-Type', 'application/json');
-    return res.status(400).json({ error: `id debe ser numérico` })
-  }
-
 
   const validate = await ProductsDTO.validateDataUpdate(req.body);
 
@@ -159,20 +129,14 @@ router.put("/:pid", async (req, res) => {
       req.body.thumbnails
     );
 
-
     const updateProduct = await ProductsDAO.updateProduct(pid, newProduct)
 
-    if (!updateProduct.status) {
-      res.setHeader('Content-Type', 'application/json');
-      return res.status(400).json({ error: updateProduct.error })
-    }
-
     res.setHeader('Content-Type', 'application/json');
-    return res.status(200).json({ message: `Producto modificado con exito` });
-
+    return res.status(200).json({ message: `Producto modificado con exito`, producto: updateProduct });
 
   } catch (error) {
     console.log(error)
+    res.status(500).json({ "error": error.message })
   }
 
 })
@@ -181,27 +145,18 @@ router.put("/:pid", async (req, res) => {
 router.delete("/:pid", async (req, res) => {
   let { pid } = req.params
 
-  if (isNaN(pid)) {
-    res.setHeader('Content-Type', 'application/json');
-    return res.status(400).json({ error: `id debe ser numérico` })
-  }
-
   try {
     const deleteProduct = await ProductsDAO.deleteProduct(pid)
-    console.log(deleteProduct);
-
-    if (!deleteProduct.status) {
-      res.setHeader('Content-Type', 'application/json');
-      return res.status(400).json({ error: updateProduct.error })
-    }
 
     res.setHeader('Content-Type', 'application/json');
-
     req.serverSocket.emit("deleteProduct", pid)
-    return res.status(200).json({ message: deleteProduct.res });
+    return res.status(200).json({ message: "producto eliminado con exito", producto: { id: deleteProduct._id, title: deleteProduct.title } });
 
   } catch (error) {
     console.log(error)
+    res.status(500).json({ "error": error.message })
   }
 
 })
+
+

@@ -1,1 +1,20 @@
-<h1> my cart</h1>
+<h1 class="text-center">{{{title}}}</h1>
+
+<section class="section-products">
+    {{#each products}}
+
+    <article id="product" class="cart">
+        <article class="cart-img"><img src={{this.id.thumbnails}} /> </article>
+        <article class="cart-description">
+            <h2>{{this.id.title}}</h2>
+            <p>{{this.id.description}}</p>
+            <p><strong>Código:</strong> {{this.id.code}}</p>
+            <p><strong>Precio:</strong> {{this.id.price}}</p>
+            <p><strong>Stock:</strong> {{this.id.stock}}</p>
+            <p><strong>Categoría:</strong> {{this.id.category}}</p>
+            <p><strong>Cantidad:</strong> {{this.quantity}}</p>
+        </article>
+    </article>
+
+    {{/each}}
+</section>

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ProductsController } from '../controllers/ProductsControllers.js';
+import { ProductsDAO } from '../dao/productsDAO.js';
 import { ProductsDTO } from '../dto/ProductsDTO.js';
 
 
@@ -8,46 +8,45 @@ export const router = Router();
 
 
 router.get("/", async (req, res) => {
-    let { limit, page, sort, category } = req.query
-    const searchParams = req.query;
+    let { limit, page, sort, query } = req.query
+
+    const jsonQuery = query && JSON.parse(query);
+
+    console.log("json", jsonQuery, "queryyy", sort, limit, page);
+
     const url = req.url;
-
     const newUrl = url == "/" ? "/?" : `${url}&`;
-    console.log("category req", url, "aaa",searchParams, "new", newUrl)
+    const mongosort = sort == "asc" ? 1 : -1
 
-    const productos = await ProductsController.getProducts(limit, page, sort, category);
-   const { totalPages, currentPage, hasPrevPage, hasNextPage, prevPage, nextPage, prevLink, nextLink} = productos
-    console.log("data controller", productos)
-   
+    const productos = await ProductsDAO.getProducts(limit, page, mongosort, jsonQuery);
+    const { totalPages, currentPage, hasPrevPage, hasNextPage, prevPage, nextPage, prevLink, nextLink } = productos
+
     res.render("home", {
-        path: newUrl ,
+        path: newUrl,
         title: "Productos",
         productos: productos.payload,
-        totalPages:totalPages,
+        totalPages: totalPages,
         currentPage: currentPage,
-        hasPrevPage:hasPrevPage,
-        hasNextPage:hasNextPage,
-        prevPage:prevPage,
-        nextPage:nextPage,
+        hasPrevPage: hasPrevPage,
+        hasNextPage: hasNextPage,
+        prevPage: prevPage,
+        nextPage: nextPage,
         prevLink: prevLink,
         nextLink: nextLink
     }
     )
 })
 
-router.get("/realtimeproducts", async (req, res) => {
-    res.render("realTimeProducts", { title: " Real Time Productos" })
-})
+
+
 
 router.get("/:idProduct", async (req, res) => {
 
     let { idProduct } = req.params
-    console.log("idproduct", idProduct)
 
     try {
 
-        const product = await ProductsController.getProductoById(idProduct);
-        console.log("databyid", product.thumbnails[0])
+        const product = await ProductsDAO.getProductById(idProduct);
 
         if (!product) {
             res.setHeader('Content-Type', 'application/json')
@@ -69,4 +68,9 @@ router.get("/:idProduct", async (req, res) => {
         console.error(error);
         res.status(500).send('Server error');
     }
+})
+
+
+router.get("/realtimeproducts", async (req, res) => {
+    res.render("realTimeProducts", { title: " Real Time Productos" })
 })

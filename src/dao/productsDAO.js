@@ -1,125 +1,79 @@
-import { config } from "../config/config.js";
-import { FilesManager } from "../data/FilesManager.js";
 import { ProductsDTO } from "../dto/ProductsDTO.js";
-import  { productosModelo } from "../models/productsModel.js";
-import mongoose from 'mongoose';
+import { productosModelo } from "../models/productsModel.js";
+
 
 export class ProductsDAO {
 
+    static async getProducts(limit = 9, page = 1, sort = 1, query = {}) {
+        try {
+            const skip = (page - 1) * limit;
+            const sortOptions = { price: parseInt(sort) }; 
+
+            const data = await productosModelo.find(query)
+                .sort(sortOptions)
+                .skip(skip)
+                .limit(limit)
+                .lean();
+
+            const totalDocs = await productosModelo.countDocuments(query);
+            const totalPages = Math.ceil(totalDocs / limit);
+
+            return {
+                status: 'success',
+                payload: data,
+                totalPages,
+                currentPage: page,
+                hasPrevPage: page > 1,
+                hasNextPage: page < totalPages,
+                prevPage: page > 1 ? page - 1 : null,
+                nextPage: page < totalPages ? page + 1 : null,
+                prevLink: page > 1 ? `/?page=${parseInt(page) - 1}` : null,
+                nextLink: page < totalPages ? `/?page=${parseInt(page) + 1}` : null,
+            };
+        } catch (error) {
+            console.error('Error en la carga de los productos:', error);
+            return {
+                status: 'error',
+                message: `Error en la carga de los productos, error: ${error} `,
+            };
+        }
+    }
+
    
-
-    /**
-     * Metodo para recuperar todos los productos 
-     * @returns { Promise<Array } 
-     */
-    static async getProducts() {
-      
-        FilesManager.setPath("./src/data/productos.json")
-        const data = await FilesManager.readFileData();
-
-        return data
-    }
-
-    /**
-     * Metodo para recuperar un producto mediante el id 
-     * @param {Number} id 
-     * @returns { Promise<Object<ProductsDTO>>} 
-     */
     static async getProductById(id) {
-
-        const data = await this.getProducts();
-
-        let exist = data.find(product => product.id == id)
-
-        if (!exist) {
-            console.log("el producto no existe");
-
-            return { "status": false, "error": "el producto no existe" }
-        }
-
-        return exist
+        return await productosModelo.findById(id).lean()
     }
 
-    /**
-     * addProduct se encarga de agregar un nuevo producto al archivo products.json
-     * @param ProductsDTO product 
-     * @returns Object  
-     */
-    static async addProduct(product) {
-        try {
-            FilesManager.setPath(config.dataFiles.products || './src/data/productos.json');
-
-            const addedData = await FilesManager.addInfoFile(product);
-            return { data: addedData, status: 'Añadido con éxito al JSON' };
-        } catch (error) {
-            console.error('Error adding product:', error);
-            return { status: 500, error: 'Error al añadir el producto' };
-        }
+    static async getByCategory(category = "") {
+        return  await productosModelo.find({ category: category }).lean() 
     }
 
+    static async getUniqueCategories() {
+        const pipeline = [
+            { $unwind: "$category" },
+            { $group: { _id: "$category" } },
+            { $project: { _id: 1 } }
+        ];
 
-    /**
-     * Metodo para actualizar un producto
-     * @param {Number} id 
-     * @param {ProductsDTO} newProduct 
-     * @returns Object
-     */
-    static async updateProduct(id, newProduct) {
-
-        const { title, description, code, price, status, category } = newProduct
-
-        try {
-            const products = await this.getProducts()
-            console.log(products)
-            const indexArray = products.findIndex(product => product.id == id);
-
-            if (indexArray !== -1) {
-                products[indexArray]["title"] = title;
-                products[indexArray]["description"] = description;
-                products[indexArray]["code"] = code;
-                products[indexArray]["price"] = price;
-                products[indexArray]["status"] = status;
-                products[indexArray]["category"] = category;
-
-
-
-                FilesManager.setPath(config.dataFiles.products || './src/data/productos.json');
-                FilesManager.recordFile(JSON.stringify(products))
-                return { status: "ok", res: 'Añadido con éxito al JSON' };
-
-            }
-
-            return { status: false, error: 'El producto no existe' };
-
-        } catch (error) {
-            return { status: 500, error: 'Error de servidor' };
-        }
+        const uniqueCategories = await productosModelo.aggregate(pipeline);
+        return uniqueCategories.map(category => category._id);
     }
 
-    /**
-     * 
-     * @param {Number} id 
-     * @returns Object
-     */
+    static async getProductoByCode(code = "") {  
+        return await productosModelo.findOne({ code: code }).lean()
+    }
+
+    static async addProduct(producto= {}) {
+        let newProduct = await productosModelo.create(producto)
+        return newProduct.toJSON()
+    }
+
+    static async updateProduct(id, modify) {
+        return await productosModelo.findByIdAndUpdate(id, modify, { new: true }).lean()
+    }
+
     static async deleteProduct(id) {
-        try {
-            const products = await this.getProducts()
-            console.log(products)
-            const indexArray = products.findIndex(product => product.id == id);
-
-            if (indexArray !== -1) {
-                products.splice(indexArray, 1);
-                FilesManager.setPath(config.dataFiles.products || './src/data/productos.json');
-                FilesManager.recordFile(JSON.stringify(products))
-                return { status: "ok", res: 'Producto eliminado con exito' };
-
-            }
-
-            return { status: false, error: 'El producto no encontrado' };
-
-        } catch (error) {
-            return { status: 500, error: 'Error de servidor' };
-        }
+        return await productosModelo.findByIdAndDelete(id).lean()
     }
 
 }
