@@ -11,9 +11,6 @@ router.get("/", async (req, res) => {
     let { limit, page, sort, query } = req.query
 
     const jsonQuery = query && JSON.parse(query);
-
-    console.log("json", jsonQuery, "queryyy", sort, limit, page);
-
     const url = req.url;
     const newUrl = url == "/" ? "/?" : `${url}&`;
     const mongosort = sort == "asc" ? 1 : -1

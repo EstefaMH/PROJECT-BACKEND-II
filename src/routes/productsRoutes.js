@@ -36,7 +36,6 @@ router.get('/categories', async (req, res) => {
   let data = {}
   try {
     data = await ProductsDAO.getUniqueCategories();
-    console.log("data categories", data)
 
     return res.status(200).json(
       {

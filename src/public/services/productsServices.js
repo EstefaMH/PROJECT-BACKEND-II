@@ -13,8 +13,6 @@ const getProducts = async () => {
         const data = await response.json();
         const productos = data;
 
-        console.log("Objetos que retorna el GET", data);
-
         productos.forEach((product) => {
 
             const article = document.createElement("article");
@@ -76,10 +74,9 @@ const deleteProduct = async (pid) => {
             throw new Error(`API request failed with status ${response.status}`);
         }
 
-        const data = await response.json();
-        console.log("Product deleted successfully:", data);
+        await response.json();
     } catch (error) {
-        console.error("Error deleting product:", error);
+        console.error("Error:", error);
     }
 }
 
