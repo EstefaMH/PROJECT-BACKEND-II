@@ -1,3 +1,13 @@
+
+import program from "../process/process.js"
+import dotenv from "dotenv"
+
+const environment = program.opts().mode;
+
+dotenv.config({
+    path: environment === "production" ? ".env.production": ".env"
+})
+
 export const config = {
     appConfig: {
         port: process.env.PORT
@@ -9,7 +19,14 @@ export const config = {
     dataBase:{
         mongoUrl: process.env.MONGODB_URL,
         mongoDataBaseName : process.env.MONGODB_NAME
-    }
+    },
+     mail:{
+        account: process.env.GMAIL_ACCOUNT,
+        password: process.env.GMAIL_APP_PASSWORD
+    },
+    persistence: program.opts().persist
 
 }
+
+
 

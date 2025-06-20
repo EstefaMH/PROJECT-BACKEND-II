@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 
-const productoSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema(
     
     {
         title: { type: String, required: true },
@@ -22,9 +22,9 @@ const productoSchema = new mongoose.Schema(
     }
 )
 
-export const productosModelo = mongoose.model(
+export const productModel = mongoose.model(
     "productos",
-    productoSchema
+    productSchema
 )
 
 

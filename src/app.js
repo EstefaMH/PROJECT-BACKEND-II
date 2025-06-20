@@ -1,14 +1,22 @@
+import MongoStore from 'connect-mongo';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import { engine } from "express-handlebars";
-import { Server } from "socket.io";
+import session from 'express-session';
+import passport from 'passport';
 import { config } from './config/config.js';
-import { connectDatabase } from './config/databaseConfig.js';
+import inicializePassport from './config/passportConfig.js';
+import UserRouter from './router/usersRouter.js';
+import AuthRouter from './router/authRouter.js';
+import { router as authRoutes } from './routes/authRoutes.js';
 import { router as cartsRoutes } from './routes/cartsRoutes.js';
+import { router as cartsView } from './routes/cartViews.js';
 import { router as productsRoutes } from './routes/productsRoutes.js';
 import { router as productsView } from './routes/productsViews.js';
-import { router as cartsView } from './routes/cartViews.js';
-
+import { router as usersViews } from './routes/usersViews.js';
+import MailRouter from './router/mailRouter.js';
+import ProductsRouter from './router/productsRouter.js';
 
 
 dotenv.config();
@@ -16,55 +24,68 @@ const app = express();
 
 const PORT = config.appConfig.port || 8080;
 
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // middle ware que permite accesar a los datos del body 
-app.use(express.static("./src/public"))
+app.use(express.json());
 
-app.engine("handlebars", engine())
-app.set("view engine", "handlebars")
-app.set("views", "./src/views")
+app.use(cookieParser("c0d3rS3cr3t0"))
 
-app.use("/", productsView);
+
+app.use(session({
+  secret: "your-secret",
+  resave: true,
+  saveUninitialized: true,
+
+  store: MongoStore.create({
+    mongoUrl: config.dataBase.mongoUrl,
+    autoRemove: 'interval',
+    ttl: 100,
+  })
+
+}))
+
+//Passport 
+inicializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+//Router views
+app.use("/products", productsView);
 app.use("/carts", cartsView);
+app.use("/", usersViews);
 
-
-
-
-
-app.use("/api/products",
-  (req, res, next) => {
-    req.serverSocket = serverSocket
-    next()
-  },
-  productsRoutes
-);
+//Router Api 
+//app.use("/api/products",productsRoutes);
 app.use("/api/carts", cartsRoutes);
+//app.use("/api/auth", authRoutes);
 
-async function database() {
-  return await connectDatabase();
-}
-database();
+
+const userRouter = new UserRouter();
+const mailRouter = new MailRouter();
+const authRouter = new AuthRouter();
+const productsRouter = new ProductsRouter();
+userRouter.init();
+mailRouter.init();
+authRouter.init();
+productsRouter.init();
+app.use("/api/users", userRouter.getRouter())
+app.use("/api/mail", mailRouter.getRouter())
+app.use("/api/auth", authRouter.getRouter())
+app.use("/api/products", productsRouter.getRouter())
+
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-
+  //console.log(process)
+  console.log(process.argv)
 });
 
 
-
-let serverSocket = new Server(server)
-
-serverSocket.on("connection", socket => {
-  console.log(`Se conecto un cliente con id ${socket.id}`)
-
-  socket.emit("saludo", { emisor: "Server WebSocket", mensaje: "Bienvenido al servidor. Identificate...!!!" })
-
-  socket.on("id", nombre => {
-    console.log(`El cliente con id ${socket.id} se ha identificado como ${nombre}`)
-    socket.broadcast.emit("nuevoUsuario", nombre)
-  })
-
-})
 
 

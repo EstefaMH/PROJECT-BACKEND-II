@@ -95,7 +95,6 @@ router.post('/', async (req, res) => {
 
     res.setHeader('Content-Type', 'application/json');
     res.status(201).json({ response: "producto creado con exito", id: response._id, producto: response })
-    req.serverSocket.emit("newProduct", product)
   } catch (error) {
     console.log(error)
     res.status(500).json({ "error": error.message })
