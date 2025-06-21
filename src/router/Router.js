@@ -30,7 +30,7 @@ export default class RouterTemplate {
         this.router.post(path,
             this.handlePolicies(policies),
             this.generateCustomResponses,
-            ...this.applyCallbacks(callbacks)
+            this.applyCallbacks(callbacks)
         )
     }
 
@@ -38,10 +38,10 @@ export default class RouterTemplate {
         console.log("Entrando por PUT  a custom router", path)
         console.log("policies: ", policies)
 
-        this.router.post(path,
+        this.router.put(path,
             this.handlePolicies(policies),
             this.generateCustomResponses,
-            ...this.applyCallbacks(callbacks)
+            this.applyCallbacks(callbacks)
         )
     }
 
@@ -49,10 +49,10 @@ export default class RouterTemplate {
         console.log("Entrando por DELETE  a custom router", path)
         console.log("policies: ", policies)
 
-        this.router.post(path,
+        this.router.delete(path,
             this.handlePolicies(policies),
             this.generateCustomResponses,
-            ...this.applyCallbacks(callbacks)
+            this.applyCallbacks(callbacks)
         )
     }
 

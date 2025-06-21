@@ -48,19 +48,12 @@ export class ProductsRepository {
     return await productModel.findById(id);
   }
 
-  /*async update(id, data) {
-    const tarea = await userModel.findByPk(id);
-    if (!tarea) return null;
-
-    await tarea.update(data);
-    return tarea;
+  async updateById(id, data) {
+    return await productModel.findByIdAndUpdate(id, data, { new: true })
   }
 
-  async delete(id) {
-    const tarea = await userModel.findByPk(id);
-    if (!tarea) return null;
-
-    await tarea.destroy();
-    return true;
-  }*/
+  async deleteById(id) {
+    return await productModel.findByIdAndDelete(id)
+   
+  }
 }
