@@ -1,7 +1,8 @@
 import nodemailer from 'nodemailer';
 import { config } from "../config/config.js";
 import path from 'path';
-import { __dirname } from '../utils/utils.js';
+import { __dirname, generateToken } from '../utils/utils.js';
+import { userModel } from '../models/userModel.js';
 
 export class MailController {
 
@@ -22,31 +23,31 @@ export class MailController {
                 console.log("server SMTP is ready")
             }
         })
+
+        this.mailOptions = {
+            from: `Recuperar contrase;a ${config.mail.account}`,
+            to: "platiniumtechcol@gmail.com",
+            subject: "Recuperar contraseña",
+            html: `
+                    <h1> Recuperar tu contraseña </h1>
+                    
+             `,
+        }
     }
 
-    mailOptions = {
-        from: `Test ${config.mail.account}`,
-        to: config.mail.account,
-        subject: "Corrreo de prueba - Backend",
-        html: `
-        <h1> PRUEBA DE EMAIL SUPER PRO </h1>
-        <img src="cid:meme" />
-        `,
-        attachments: [{
-            filename: 'meme',
-            path: path.join(__dirname, "../public/img/LOGOPLATINIUM.png"),
-            cid: 'meme'
-        }]
-    }
+
 
 
 
     sendEmail = async (req, res) => {
+
+
+
         try {
             this.transporter.sendMail(this.mailOptions, (error, info) => {
                 if (error) {
                     console.log(error)
-                   return res.status(400).send({ message: "Error", payload: error })
+                    return res.status(400).send({ message: "Error", payload: error })
                 }
 
                 console.log(`Message sent: %s`, info.messageId);
@@ -57,57 +58,50 @@ export class MailController {
         }
     };
 
-    /*create = async (req, res) => {
-        console.log(req.body)
+    sendRecoveryEmail = async (req, res) => {
+        const { email } = req.body;
+        console.log("email", email)
+
+        if (!email) {
+            return res.status(400).send({ message: "Error", payload: "Email es requerido" });
+        }
+
+        const exist = await userModel.findOne({email})
+        console.log("exust", exist)
+        if(!exist){
+            return res.status(400).send({ message: "Error", payload: "No esta registrado con este email." });
+        }
+
+        const recovery_token = generateToken({ email: email }, '1h');
+        console.log("Generated recovery token:", recovery_token);
+
+        const recoveryLink = `http://localhost:5173/recovery?token=${recovery_token}`;
+
+        const mailOptions = {
+            from: `Recuperar contraseña ${config.mail.account}`,
+            to: email,
+            subject: "Recuperar contraseña",
+            html: `
+                <h1>Recuperar tu contraseña</h1>
+                <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+                <a href=${recoveryLink}>Restablecer Contraseña</a>
+                <p>Si no solicitaste un restablecimiento de contraseña, ignora este correo electrónico.</p>
+            `,
+        };
+
         try {
-            const usersDTO = new UsersDTO(req.body);
-            const result = await this.service.create(usersDTO);
-            console.log("res cont", result)
-            res.status(201).json(result);
-        } catch (e) {
-            res.status(400).json({ error: e.message });
+            this.transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error("Error sending email:", error);
+                    return res.status(500).send({ message: "Error al enviar el correo", payload: error.message });
+                }
+
+                console.log(`Message sent: %s`, info.messageId);
+                res.status(200).send({ status: "Success", message: "Correo de recuperación enviado exitosamente.", payload: info });
+            });
+        } catch (error) {
+            console.error("Internal server error:", error);
+            res.status(500).send({ message: "Error interno del servidor", payload: error.message });
         }
     };
-
-
-    getById = async (req, res) => {
-        try {
-            const result = await this.service.getById(req.params.id);
-            if (!result) return res.status(404).json({ error: 'Tarea no encontrada' });
-            res.json(result);
-        } catch (e) {
-            res.status(400).json({ error: e.message });
-        }
-    };
-
-    create = async (req, res) => {
-        console.log(req.body)
-        try {
-            const result = await this.service.create(req.body);
-            console.log("res cont", result)
-            res.status(201).json(result);
-        } catch (e) {
-            res.status(400).json({ error: e.message });
-        }
-    };
-
-    update = async (req, res) => {
-        try {
-            const result = await this.service.update(req.params.id, req.body);
-            if (!result) return res.status(404).json({ error: 'Tarea no encontrada' });
-            res.json(result);
-        } catch (e) {
-            res.status(400).json({ error: e.message });
-        }
-    };
-
-    delete = async (req, res) => {
-        try {
-            const deleted = await this.service.remove(req.params.id);
-            if (!deleted) return res.status(404).json({ error: 'Tarea no encontrada' });
-            res.status(204).send();
-        } catch (e) {
-            res.status(400).json({ error: e.message });
-        }
-    };*/
 }

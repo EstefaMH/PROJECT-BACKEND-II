@@ -14,7 +14,7 @@ export default class MailRouter extends RouterTemplate {
        
        this.get("/", ["PUBLIC"], this.controller.sendEmail)
 
-       this.get("/recovery-password", ["PUBLIC"], this.controller.sendEmail)
+       this.post("/recovery-password", ["PUBLIC"], this.controller.sendRecoveryEmail)
 
        this.get("/attachments", ["PUBLIC"], (req, res) => {
             res.send(req.user)

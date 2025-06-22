@@ -7,16 +7,13 @@ import session from 'express-session';
 import passport from 'passport';
 import { config } from './config/config.js';
 import inicializePassport from './config/passportConfig.js';
-import UserRouter from './router/usersRouter.js';
 import AuthRouter from './router/authRouter.js';
-import { router as authRoutes } from './routes/authRoutes.js';
-import { router as cartsRoutes } from './routes/cartsRoutes.js';
-import { router as cartsView } from './routes/cartViews.js';
-import { router as productsRoutes } from './routes/productsRoutes.js';
-import { router as productsView } from './routes/productsViews.js';
-import { router as usersViews } from './routes/usersViews.js';
 import MailRouter from './router/mailRouter.js';
 import ProductsRouter from './router/productsRouter.js';
+import UserRouter from './router/usersRouter.js';
+import { router as cartsView } from './routes/cartViews.js';
+import { router as productsView } from './routes/productsViews.js';
+import { router as usersViews } from './routes/usersViews.js';
 
 
 dotenv.config();
@@ -61,8 +58,7 @@ app.use("/carts", cartsView);
 app.use("/", usersViews);
 
 //Router Api 
-//app.use("/api/products",productsRoutes);
-app.use("/api/carts", cartsRoutes);
+//app.use("/api/carts", cartsRoutes);
 //app.use("/api/auth", authRoutes);
 
 

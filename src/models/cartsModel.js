@@ -20,7 +20,7 @@ const cartsSchema = new mongoose.Schema(
     { collection: 'carts' }
 )
 
-export const cartsModelo = mongoose.model(
+export const cartsModel = mongoose.model(
     "carts",
     cartsSchema
 )

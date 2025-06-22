@@ -25,14 +25,21 @@ const isValidPassword = (user, password) => {
     return bcrypt.compareSync(password, user.password)
 }
 
+export const comparePassword = async (newPassword, hashPassword) => {
+    if (!newPassword || !hashPassword) {
+        throw new Error("la contraseña es requerida"); 
+    }
+    return await bcrypt.compare(newPassword, hashPassword);
+};
+
 export const validateID = (id) => {
-     if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new Error('ID inválido. El ID proporcionado no es un ObjectId válido.');
     }
 }
 
-const generateToken = (user) => {
-    const token = jwt.sign({ user }, process.env.PRIVATE_KEY, { expiresIn: '24h' })
+const generateToken = (user, exp) => {
+    const token = jwt.sign({ user }, process.env.PRIVATE_KEY, { expiresIn: exp })
     return token;
 }
 
@@ -51,6 +58,29 @@ const authToken = (req, res, next) => {
         }
 
         req.user = credentials.user;
+        next()
+    })
+}
+
+export const verifyToken = (req, res, next) => {
+
+    const { token, password } = req.body
+
+    jwt.verify(token, process.env.PRIVATE_KEY, (error, credentials) => {
+        if (error) {
+            console.error("Error verificando token:", error);
+            return res.status(403).send({ error: error })
+        }
+
+        if (error === 'TokenExpiredError') {
+            return res.status(401).send({ message: "Error", payload: "El token de recuperación ha expirado." });
+        }
+        if (error === 'JsonWebTokenError') {
+            return res.status(401).send({ message: "Error", payload: "Token inválido." });
+        }
+
+        req.body = credentials.user 
+        req.password =  password;
         next()
     })
 }
@@ -80,7 +110,7 @@ const passportCall = (strategy) => {
 
 const authorization = (role) => {
     return async (req, res, next) => {
-         console.log("role", role , "req.user.role", req.user.role)
+        console.log("role", role, "req.user.role", req.user.role)
         if (req.user.role !== role) {
             return res.status(403).send("Forbidden: El usuario no esta autorizado")
         }

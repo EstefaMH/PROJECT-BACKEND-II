@@ -1,6 +1,7 @@
 import passport from "passport";
 import { AuthController } from "../controllers/authController.js";
 import RouterTemplate from "./Router.js";
+import { verifyToken } from "../utils/utils.js";
 
 
 export default class AuthRouter extends RouterTemplate {
@@ -47,6 +48,7 @@ export default class AuthRouter extends RouterTemplate {
 
         this.post("/login", ["PUBLIC"], this.generateCustomResponses,this.controller.login);
 
+        this.post('/reset-password', ["PUBLIC"],this.generateCustomResponses,verifyToken, this.controller.verifyRecoveryToken);
 
 
 

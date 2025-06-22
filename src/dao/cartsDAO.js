@@ -1,14 +1,14 @@
-import { cartsModelo } from "../models/cartsModel.js";
+import { cartsModel } from "../models/cartsModel.js";
 
 export class CartsDAO {
 
     static async getCarts() {
-        return await cartsModelo.find().lean()
+        return await cartsModel.find().lean()
     }
 
     static async getCartById(id) {
 
-        return await cartsModelo.findById(id)
+        return await cartsModel.findById(id)
           .populate({
             path: 'products.id',
             model: 'productos'
@@ -17,7 +17,7 @@ export class CartsDAO {
     }
 
     static async addNewCart(cart = {}) {
-        let newCart = await cartsModelo.create(cart)
+        let newCart = await cartsModel.create(cart)
         return newCart.toJSON()
     }
 

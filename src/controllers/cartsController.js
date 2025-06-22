@@ -1,4 +1,5 @@
 import UsersDTO from "../dto/usersDTO.js";
+import { cartsModel } from "../models/cartsModel.js";
 import { userService } from "../services/factory.js";
 
 
@@ -7,10 +8,11 @@ export class CartsController {
 
     create = async (req, res) => {}
 
-    getAll = async (req, res) => {
+    add = async (req, res) => {
         try {
             console.log("contr")
-            const result = await userService.getAll();
+            let newCart = await cartsModel.create(cart)
+                   return newCart.toJSON()
             console.log("res contr", result)
             // res.status(200).json(result);
 

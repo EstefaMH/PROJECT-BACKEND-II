@@ -13,7 +13,7 @@ export default class CartsRouter extends RouterTemplate {
     init() {
 
         //CREAR CARRO VACIO
-        this.post("/", ["PUBLIC"], this.controller.create)
+        this.post("/", ["PUBLIC"], this.controller.add)
 
         //AÑADIR PRODUCTO A UN CART
         this.post("/:cid/product/:pid", ["PUBLIC"], this.controller.create)

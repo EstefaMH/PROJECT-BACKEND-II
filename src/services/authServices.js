@@ -1,3 +1,4 @@
+
 import { CartsDAO } from "../dao/cartsDAO.js";
 import { CartProductsDTO } from "../dto/CartProductsDTO.js";
 import UsersDTO from "../dto/usersDTO.js";
@@ -59,7 +60,7 @@ export default class AuthService {
             role: user.role,
             cartId: cart._id
         };
-        const access_token = generateToken(tokenUser);
+        const access_token = generateToken(tokenUser, '24h');
         console.log(access_token);
 
 

@@ -24,6 +24,7 @@ export const config = {
         account: process.env.GMAIL_ACCOUNT,
         password: process.env.GMAIL_APP_PASSWORD
     },
+    token: process.env.TOKEN_SECRET_KEY,
     persistence: program.opts().persist
 
 }
