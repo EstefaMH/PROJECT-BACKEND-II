@@ -1,8 +1,7 @@
 import nodemailer from 'nodemailer';
 import { config } from "../config/config.js";
-import path from 'path';
-import { __dirname, generateToken } from '../utils/utils.js';
 import { userModel } from '../models/userModel.js';
+import { generateToken } from '../utils/utils.js';
 
 export class MailController {
 
@@ -35,14 +34,7 @@ export class MailController {
         }
     }
 
-
-
-
-
     sendEmail = async (req, res) => {
-
-
-
         try {
             this.transporter.sendMail(this.mailOptions, (error, info) => {
                 if (error) {
@@ -50,7 +42,7 @@ export class MailController {
                     return res.status(400).send({ message: "Error", payload: error })
                 }
 
-                console.log(`Message sent: %s`, info.messageId);
+                console.log(`Message sent: `, info.messageId);
                 res.send({ status: "Success", payload: info })
             })
         } catch (error) {
@@ -73,7 +65,6 @@ export class MailController {
         }
 
         const recovery_token = generateToken({ email: email }, '1h');
-        console.log("Generated recovery token:", recovery_token);
 
         const recoveryLink = `http://localhost:5173/recovery?token=${recovery_token}`;
 

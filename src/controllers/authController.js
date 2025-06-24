@@ -7,17 +7,6 @@ import bcrypt from 'bcrypt'
 
 export class AuthController {
 
-    getAll = async (req, res) => {
-        try {
-            console.log("contr")
-            const result = await userService.getAll();
-            console.log("res contr", result)
-
-            res.sendResponse(result)
-        } catch (error) {
-            res.sendInternalServerError(error)
-        }
-    };
 
     register = async (req, res) => {
 

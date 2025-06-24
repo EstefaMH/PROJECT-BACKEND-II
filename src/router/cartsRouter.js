@@ -13,10 +13,10 @@ export default class CartsRouter extends RouterTemplate {
     init() {
 
         //CREAR CARRO VACIO
-        this.post("/", ["PUBLIC"], this.controller.add)
+        this.post("/", ["PUBLIC"],this.generateCustomResponses, this.controller.create)
 
         //AÑADIR PRODUCTO A UN CART
-        this.post("/:cid/product/:pid", ["PUBLIC"], this.controller.create)
+        this.post("/:cid/product/:pid", ["PUBLIC"], this.controller.addProduct)
 
         //GET TODOS LOS CARROS
         this.get("/", ["ADMIN"], this.controller.getAll)
@@ -30,7 +30,7 @@ export default class CartsRouter extends RouterTemplate {
         this.delete("/", ["ADMIN"], this.controller.deleteAll)
 
         //BORRAR UN PRODUCTO DEL CARRO 
-        router.delete('/:cid/product/:pid', ["USER"], )
+        this.delete('/:cid/product/:pid', ["USER"], )
         
         //Borrar carro por Id
         this.delete("/:cid", ["PUBLIC"], this.controller.deleteById)

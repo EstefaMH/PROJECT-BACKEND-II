@@ -1,5 +1,7 @@
+import { productModel } from "../models/productModel.js";
 import { CartsRepository } from "../repositories/cartsRepository.js";
-import { UsersRepository } from "../repositories/usersRepository.js";
+import { ProductsRepository } from "../repositories/productsRepository.js";
+import ProductsService from "./productsServices.js";
 
 
 export default class CartsService {
@@ -9,17 +11,36 @@ export default class CartsService {
         this.repository = repository;
     }
 
-    async create(){ }
+    async create() {
+        return this.repository.create()
+    }
 
-    async getAll(){ };
+    async addProduct(cid, pid, quantity) {
+        
+        const product = await productModel.findById(pid)
+        console.log("pro", product)
+        if (!product) {
+            console.warn(`producto no encontrado`);
+            return {status: 400, error: `producto no encontrado con ID ${pid}`};
+        }
 
-    async getById(){ };
 
-    async updateById(){ }
 
-    async deleteAll(){ }
+        return this.repository.addProduct(cid, product, quantity)
+    }
 
-    async deleteById(){ }
+    async getAll() { };
+
+    async getById(id) {
+        console.log("service")
+        return this.repository.getById(id)
+    };
+
+    async updateById() { }
+
+    async deleteAll() { }
+
+    async deleteById() { }
 
     /* async getAll() {
          const a = this.repository.findAll()

@@ -14,6 +14,7 @@ import UserRouter from './router/usersRouter.js';
 import { router as cartsView } from './routes/cartViews.js';
 import { router as productsView } from './routes/productsViews.js';
 import { router as usersViews } from './routes/usersViews.js';
+import CartsRouter from './router/cartsRouter.js';
 
 
 dotenv.config();
@@ -22,7 +23,7 @@ const app = express();
 const PORT = config.appConfig.port || 8080;
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -58,23 +59,21 @@ app.use("/carts", cartsView);
 app.use("/", usersViews);
 
 //Router Api 
-//app.use("/api/carts", cartsRoutes);
-//app.use("/api/auth", authRoutes);
-
-
 const userRouter = new UserRouter();
 const mailRouter = new MailRouter();
 const authRouter = new AuthRouter();
 const productsRouter = new ProductsRouter();
+const cartsRouter = new CartsRouter()
 userRouter.init();
 mailRouter.init();
 authRouter.init();
 productsRouter.init();
+cartsRouter.init();
 app.use("/api/users", userRouter.getRouter())
 app.use("/api/mail", mailRouter.getRouter())
 app.use("/api/auth", authRouter.getRouter())
 app.use("/api/products", productsRouter.getRouter())
-
+app.use("/api/carts", cartsRouter.getRouter())
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor ejecutándose en http://localhost:${PORT}`);

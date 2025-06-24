@@ -1,12 +1,49 @@
+import { cartsModel } from "../models/cartsModel.js";
 import { userModel } from "../models/userModel.js";
 
 
 
 export class CartsRepository {
 
-  
-  async create(data) {
-    return await userModel.create(data);
+
+  async create() {
+    return await cartsModel.create({});
+  }
+
+  async addProduct(cid, product, quantity) {
+
+    const findCart = await cartsModel.findById({ _id: cid });
+   
+    if (!findCart) {
+      console.warn(`Cart con ID ${cid} no encontrado`);
+      throw new Error(`Cart con ID ${cid} no encontrado`);
+    }
+
+    const index = findCart.products.findIndex(
+      (item) => item._id.toString() === product._id.toString()
+    );
+
+    if (index !== -1) {
+
+      return await cartsModel.findOneAndUpdate(
+        { _id: cid, 'products._id': product._id },
+        { $inc: { 'products.$.quantity': quantity } },
+        { new: true }
+      );
+    }
+
+    return await cartsModel.updateOne(
+      { _id: cid },
+      {
+        $push: {
+          products: {
+            product: product._id, 
+            quantity: quantity
+          }
+        }
+      },
+      { new: true }
+    );
   }
 
   async findAll() {
@@ -14,11 +51,12 @@ export class CartsRepository {
     return await userModel.find();
   }
 
-  /*async findById(id) {
-    return await userModel.findByPk(id);
+  async getById(id) {
+    console.log("model")
+    return await cartsModel.findById({ _id: id });
   }
 
-  async update(id, data) {
+  /*async update(id, data) {
     const tarea = await userModel.findByPk(id);
     if (!tarea) return null;
 
