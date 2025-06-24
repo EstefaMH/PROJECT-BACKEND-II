@@ -23,6 +23,7 @@ export default class AuthRouter extends RouterTemplate {
             this.generateCustomResponses,
             (req, res, next) => {
                 passport.authenticate('register', (err, user, info) => {
+                   console.log("user", user)
                     if (err) {
                         console.error("Passport register error (server-side):", err);
                         return res.status(500).json({

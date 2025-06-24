@@ -14,11 +14,12 @@ const inicializePassport = () => {
     passport.use('register', new localStrategy(
         {
             passReqToCallback: true,
-            usernameField: 'email'
+            usernameField: 'email',
+            passwordField: 'password'
         },
 
-        async (req, username, password, done) => {
-            const { first_name, last_name, email, age , role } = req.body;
+        async (req, email , password, done) => {
+            const { first_name, last_name, age , role } = req.body;
             console.log("Registrando usuario:");
             console.log(req.body);
 
@@ -41,7 +42,7 @@ const inicializePassport = () => {
 
 
                 const result = await userModel.create(newUser)
-                console.log("res", result)
+          
                 return done(null, result)
 
             } catch (error) {

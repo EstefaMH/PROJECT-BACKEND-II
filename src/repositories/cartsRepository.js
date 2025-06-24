@@ -46,29 +46,8 @@ export class CartsRepository {
     );
   }
 
-  async findAll() {
-    console.log("repo find", userModel.find())
-    return await userModel.find();
-  }
-
   async getById(id) {
-    console.log("model")
     return await cartsModel.findById({ _id: id });
   }
 
-  /*async update(id, data) {
-    const tarea = await userModel.findByPk(id);
-    if (!tarea) return null;
-
-    await tarea.update(data);
-    return tarea;
-  }
-
-  async delete(id) {
-    const tarea = await userModel.findByPk(id);
-    if (!tarea) return null;
-
-    await tarea.destroy();
-    return true;
-  }*/
 }
