@@ -1,15 +1,14 @@
 
 import { CartsDAO } from "../dao/cartsDAO.js";
-import { CartProductsDTO } from "../dto/CartProductsDTO.js";
-import UsersDTO from "../dto/usersDTO.js";
-import { AuthRepository } from "../repositories/authRepository.js";
-import { createHash, generateToken, isValidPassword, validateID } from "../utils/utils.js";
+import { CartProductsDTO } from "../../dto/CartProductsDTO.js";
+import UsersDTO from "../../dto/usersDTO.js";
+import { AuthRepository } from "../../repositories/authRepository.js";
+import { createHash, generateToken, isValidPassword, validateID } from "../../utils/utils.js";
 
 
 export default class AuthService {
 
     constructor(repository = new AuthRepository()) {
-        console.log("repository init")
         this.repository = repository;
     }
 
@@ -88,20 +87,7 @@ export default class AuthService {
          console.log("userService", user)
 
 
-        //validateTask(data)
         return this.repository.create(user);
     }
-
-    /* async update(id, data) {
-         validateID(id)
-         validateTask(data)
- 
-         return this.repository.update(id, data);
-     }
- 
-     async remove(id) {
-         validateID(id)
-         return this.repository.delete(id);
-     }*/
 }
 

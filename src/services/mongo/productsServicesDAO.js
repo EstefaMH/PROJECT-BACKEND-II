@@ -1,5 +1,5 @@
-import { ProductsDTO } from "../dto/ProductsDTO.js";
-import { ProductsRepository } from "../repositories/productsRepository.js";
+import { ProductsDTO } from "../../dto/ProductsDTO.js";
+import { ProductsRepository } from "../../repositories/productsRepository.js";
 
 
 export default class ProductsService {

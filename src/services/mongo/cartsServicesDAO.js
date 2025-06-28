@@ -1,7 +1,7 @@
-import { productModel } from "../models/productModel.js";
-import { CartsRepository } from "../repositories/cartsRepository.js";
-import { ProductsRepository } from "../repositories/productsRepository.js";
-import ProductsService from "./productsServices.js";
+import { productModel } from "../../models/productModel.js";
+import { CartsRepository } from "../../repositories/cartsRepository.js";
+import { ProductsRepository } from "../../repositories/productsRepository.js";
+import ProductsService from "./productsServicesDAO.js";
 
 
 export default class CartsService {

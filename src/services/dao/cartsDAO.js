@@ -1,4 +1,4 @@
-import { cartsModel } from "../models/cartsModel.js";
+import { cartsModel } from "../../models/cartsModel.js";
 
 export class CartsDAO {
 

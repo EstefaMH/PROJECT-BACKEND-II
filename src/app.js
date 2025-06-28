@@ -11,10 +11,8 @@ import AuthRouter from './router/authRouter.js';
 import MailRouter from './router/mailRouter.js';
 import ProductsRouter from './router/productsRouter.js';
 import UserRouter from './router/usersRouter.js';
-import { router as cartsView } from './routes/cartViews.js';
-import { router as productsView } from './routes/productsViews.js';
-import { router as usersViews } from './routes/usersViews.js';
 import CartsRouter from './router/cartsRouter.js';
+import TicketRouter from './router/ticketRouter.js';
 
 
 dotenv.config();
@@ -53,10 +51,7 @@ inicializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Router views
-app.use("/products", productsView);
-app.use("/carts", cartsView);
-app.use("/", usersViews);
+
 
 //Router Api 
 const userRouter = new UserRouter();
@@ -64,16 +59,19 @@ const mailRouter = new MailRouter();
 const authRouter = new AuthRouter();
 const productsRouter = new ProductsRouter();
 const cartsRouter = new CartsRouter()
+const ticketRouter = new TicketRouter()
 userRouter.init();
 mailRouter.init();
 authRouter.init();
 productsRouter.init();
 cartsRouter.init();
+ticketRouter.init();
 app.use("/api/users", userRouter.getRouter())
 app.use("/api/mail", mailRouter.getRouter())
 app.use("/api/auth", authRouter.getRouter())
 app.use("/api/products", productsRouter.getRouter())
 app.use("/api/carts", cartsRouter.getRouter())
+app.use("/api/tickets", ticketRouter.getRouter())
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor ejecutándose en http://localhost:${PORT}`);

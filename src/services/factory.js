@@ -7,6 +7,7 @@ let userService
 let authService
 let cartService
 let productService
+let ticketService
 
 
 
@@ -31,17 +32,20 @@ async function initializeMongoService() {
             console.log('mongo')
             await initializeMongoService()
 
-            const { default: AuthService } = await import('./authServices.js')
+            const { default: AuthService } = await import('./mongo/authServicesDAO.js')
             authService = new AuthService()
 
-            const { default: UserService } = await import('./usersServices.js')
+            const { default: UserService } = await import('./mongo/usersServicesDAO.js')
             userService = new UserService()
 
-            const { default: CartService } = await import('./cartsServices.js')
+            const { default: CartService } = await import('./mongo/cartsServicesDAO.js')
             cartService = new CartService()
 
-            const { default: ProductService } = await import('./productsServices.js')
+            const { default: ProductService } = await import('./mongo/productsServicesDAO.js')
             productService = new ProductService()
+
+            const { default: TicketService } = await import('./mongo/ticketServiceDAO.js')
+            ticketService = new TicketService()
 
             console.log("servicio de usuarios cargado", userService)
             break;
@@ -55,4 +59,4 @@ async function initializeMongoService() {
     }
 })()
 
-export { userService, authService, cartService,productService }
+export { userService, authService, cartService,productService , ticketService}
