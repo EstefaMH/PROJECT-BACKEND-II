@@ -16,16 +16,16 @@ export default class CartsRouter extends RouterTemplate {
         this.post("/", ["PUBLIC"],this.generateCustomResponses, this.controller.create)
 
         //AÑADIR PRODUCTO A UN CART
-        this.post("/:cid/product/:pid", ["PUBLIC"], this.controller.addProduct)
+        this.post("/:cid/product/:pid", ["USER"], this.controller.addProduct)
 
         //GET TODOS LOS CARROS
         this.get("/", ["ADMIN"], this.controller.getAll)
 
         //GET CARRO POR ID 
-        this.get("/:cid", ["PUBLIC"], this.controller.getById)
+        this.get("/:cid", ["USER"], this.controller.getById)
 
         //ACTUALIZAR UN PRODUCTO DEL CARRO
-        this.put("/:cid/product/:pid", ["PUBLIC"], this.controller.updateById)
+        this.put("/:cid/product/:pid", ["USER"], this.controller.updateById)
 
         this.delete("/", ["ADMIN"], this.controller.deleteAll)
 
