@@ -28,27 +28,25 @@ export default class AuthService {
 
     async login(email, password) {
         const user = await this.getUserByEmail(email);
-        console.log("Usuario encontrado para login:");
-        console.log(user);
+        
         if (!user) {
-            console.warn("User doesn't exists with username: " + email);
+            console.warn("Usuario no existe con el email: " + email);
             return { status: 404, error: "Not found", message: "Usuario no encontrado con username: " + email }
         }
 
         if (!isValidPassword(user, password)) {
-            console.warn("Invalid credentials for user: " + email);
+            console.warn("credenciales invalidas para: " + email);
             return { status: 401, error: "El usuario y la contraseña no coinciden!" }
         }
 
 
-        const newCart = new CartProductsDTO(
-            null,
-        );
+        const newCart = new CartProductsDTO(null,);
+
         const cart = await CartsDAO.addNewCart(newCart)
         console.log(cart)
 
         if (!cart) {
-            console.warn("Invalid credentials for user: " + email);
+            console.warn("Crdenciales invalidas para usuario: " + email);
             return { status: 500, error: "Error de servidor intente más tarde" }
         }
 
@@ -59,10 +57,8 @@ export default class AuthService {
             role: user.role,
             cartId: cart._id
         };
+        
         const access_token = generateToken(tokenUser, '24h');
-        console.log(access_token);
-
-
 
         return { cartId: cart._id, status: 200, message: "Login successful!", access_token: access_token, id: user._id }
     }

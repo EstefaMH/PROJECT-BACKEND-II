@@ -22,15 +22,5 @@ export default class PurchaseRouter extends RouterTemplate {
         //Crear una factura
         this.post("/",["PUBLIC"],this.controller.create)
 
-
-        /* this.get("/user", ["USER"], (req, res) => {
-             res.send(req.user)
-         })
- 
-          this.get("/admin", ["ADMIN"], (req, res) => {
-             res.sendSuccess(req.user)
-         })
- 
-         */
     }
 }

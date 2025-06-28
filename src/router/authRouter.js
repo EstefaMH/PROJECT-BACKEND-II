@@ -51,35 +51,5 @@ export default class AuthRouter extends RouterTemplate {
 
         this.post('/reset-password', ["PUBLIC"],this.generateCustomResponses,verifyToken, this.controller.verifyRecoveryToken);
 
-
-
-        /* 
-          (req, res, next) => {
-                passport.authenticate('jwt', (err, user, info) => {
-                    if (err) {
-                        console.error("Error en autenticación local:", err);
-                        return res.status(500).json({ status: "error", message: "Error interno del servidor." });
-                    }
-                    if (!user) {
-                        return res.status(401).json({ status: "error", message: info.message || 'Credenciales inválidas.' });
-                    }
-                    
-                    req.user = user; 
-        
-                    next(); 
-                })(req, res, next);
-            }
-        
-        
-        
-        this.get("/user", ["USER"], (req, res) => {
-             res.send(req.user)
-         })
- 
-          this.get("/admin", ["ADMIN"], (req, res) => {
-             res.sendSuccess(req.user)
-         })
- 
-         */
     }
 }

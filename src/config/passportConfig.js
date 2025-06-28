@@ -84,7 +84,7 @@ const inicializePassport = () => {
      ))*/
 
     passport.use('jwt', new JwtStrategy({
-        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), // extrae el jwt de una cookie
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), 
         secretOrKey: process.env.PRIVATE_KEY
     },
         async (jwt_payload, done) => {

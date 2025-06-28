@@ -68,15 +68,4 @@ export class ProductsController {
         }
     };
 
-    /*deleteAll = async (req, res) => {
-        try {
-            const deleted = await this.service.remove(req.params.id);
-            if (!deleted) return res.status(404).json({ error: 'Tarea no encontrada' });
-            res.status(204).send();
-        } catch (e) {
-            res.status(400).json({ error: e.message });
-        }
-    };*/
-
-
 }

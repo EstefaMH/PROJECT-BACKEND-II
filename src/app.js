@@ -75,8 +75,6 @@ app.use("/api/tickets", ticketRouter.getRouter())
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-  //console.log(process)
-  console.log(process.argv)
 });
 
 

@@ -51,7 +51,6 @@ async function initializeMongoService() {
             break;
         case 'files':
             console.log('files')
-            //studentService = instancia_student
             break;
 
         default:
